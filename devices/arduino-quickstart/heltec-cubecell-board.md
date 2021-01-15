@@ -83,24 +83,35 @@ Next, to install this board support package:
 
 ### Manual updates to the Heltec runtime libraries
 
-#### Verify Data Rate
+The following discusses two Heltec runtime files the must be inspected to ensure the content is compatible with the Helium network. The exact location of these files will depend on which operating system you are using, Windows, Linux, or Mac. The typical top level locations of the files is shown below for each operating system. From there the following discussions will present to you the file locations within these top level directories/folders. Please note the Heltec library version numbers are expected to change as time goes on.
+XXXXX denotes your specfic user id.
+
+###### Arduino IDE library location
+* Windows
+```text
+C:\Users\XXXX\AppData\Local\Arduino15\packages\CubeCell\hardware\CubeCell\
+```
+* Linux
+```text
+/home/XXXXX/.arduino15/packages/CubeCell/hardware/CubeCell/
+```
+* Mac
+```text
+/Users/XXXXX/Library/Arduino15/packages/CubeCell/hardware/CubeCell/
+```
+
+** Verify Data Rate
 
 Some versions of Heltec's runtime libraries have set a default configuration variable to a value that is incompatible with the Helium network, especially when the Heltec device is configured for the North American market. Before attempting to use the libraries it is best to verify the value of the variable.
 
-The location of the file of interest depends on the library installation directory of the IDE you are using, Arduino IDE vs Platformio IDE, as well as the host platform, Windows vs Linux vs Mac. With the Arduino IDE location, the library version number may also be different depending on when you download the package.
+The location of the file of interest depends on the library installation directory of the Arduino IDE as well as the host platform, Windows vs Linux vs Mac. Also note the library version number may also be different depending on when you download the package.
 
-For example on a Linux platform the files should be located at:
+Using the above top level directory as the starting point inspect the following file:
 
 Arduino IDE library version 1.0.0:
 
 ```text
-~/.arduino15/packages/CubeCell/hardware/CubeCell/1.0.0/libraries/LoRa/src/LoRaWan_APP.cpp
-```
-
-Platformio IDE:
-
-```text
-~/.platformio/packages/framework-arduinoasrmicro650x/libraries/LoRa/src/LoRaWan_APP.cpp
+./1.0.0/libraries/LoRa/src/LoRaWan_APP.cpp
 ```
 
 In LoRaWan\_APP.cpp look for \#define LORAWAN\_DEFAULT\_DATARATE  
@@ -129,16 +140,14 @@ There are some versions of the Heltec runtime libraries that may set a LoRaWAN p
 
 This should be verified in the following file corresponding to your target LoRaWan region. For region US915 this file is RegionUS915.c:
 
-For Arduino IDE library version 1.0.0 the file is located:
+The location of this file depends on the library installation directory of the Arduino IDE as well as the host platform, Windows vs Linux vs Mac. Also note the library version number may also be different depending on when you download the package.
+
+Using the above top level directory as the starting point inspect the following file:
+
+Arduino IDE library version 1.0.0:
 
 ```text
-~/.arduino15/packages/CubeCell/hardware/CubeCell/1.0.0/cores/asr650x/loramac/mac/region/RegionUS915.c
-```
-
-Platformio IDE:
-
-```text
-~/.platformio/packages/framework-arduinoasrmicro650x/cores/asr650x/loramac/mac/region/RegionUS915.c
+./1.0.0/cores/asr650x/loramac/mac/region/RegionUS915.c
 ```
 
 In this file locate the line below, the 7th parameter which might be 14 should be changed to either 8 or 16. Either value will work. Later versions of the runtime may have this value set to 14 which should work just fine.
@@ -161,7 +170,10 @@ Heltec support has been notified of these issues, hopefully a future release of 
 
 Find Directions on Heltec's website [here](https://heltec-automation-docs.readthedocs.io/en/latest/general/establish_serial_connection.html).
 
-### Select Board
+### Set Project Configuration Options
+The following options are set via the Arduino IDE Tools menu:
+
+#### Select Board
 
 Arduino IDE:
 
@@ -169,13 +181,18 @@ If you are using the HTCC-AB02 flavor of Heltec board 1. Select Tools -&gt; Boar
 
 If you are using the HTCC-AB02S GPS enabled flavor of Heltec board 1. Select Tools -&gt; Board: -&gt;CubeCell-GPS \(HTCC-AB02S\)
 
-### Select Region
+#### Select LoraWAN Configuration Options
 
-Arduino IDE: Until you are familiar with their configuration behavior it is recommended you set the board options as follows: 1. Select Tools -&gt; LORAWAN_REGION: -&gt; REGION\_US915 2. Select Tools -&gt; LORAWAN\_CLASS: -&gt; CLASS\_A 3. Select Tools -&gt; LORAWAN\_NETMODE: -&gt; OTTA 4. Select Tools -&gt; LORAWAN\_ADR: -&gt; OFF 5. Select Tools -&gt; LORAWAN\_UPLINKMODE: -&gt; UNCONFIRMED 6. Select Tools -&gt; LORAWAN\_Net\_Reservation: -&gt; OFF 7. Select Tools -&gt; LORAWAN\_AT\_SUPPORT: -&gt; OFF 8. Select Tools -&gt; LORAWAN\_AT\_RGB : -&gt; ACTIVE 9. Select Tools -&gt; LoRaWan_ Debug Level : -&gt; FREQ&&DIO \(for most verbose messages\)
-
-### Select **Uplink Mode**
-
-The last step before we upload our sketch is to select the LoRaWAN Uplink Mode, navigate to **\(Tools &gt; LoRaWAN Uplink Mode: &gt; UNCONFIRMED\).**
+Arduino IDE: Until you are familiar with their configuration behavior it is recommended you set the board options as follows:
+* Select Tools -&gt; LORAWAN_REGION: -&gt; REGION\_US915
+* Select Tools -&gt; LORAWAN\_CLASS: -&gt; CLASS\_A
+* Select Tools -&gt; LORAWAN\_NETMODE: -&gt; OTTA
+* Select Tools -&gt; LORAWAN\_ADR: -&gt; OFF
+* Select Tools -&gt; LORAWAN\_UPLINKMODE: -&gt; UNCONFIRMED
+* Select Tools -&gt; LORAWAN\_Net\_Reservation: -&gt; OFF
+* Select Tools -&gt; LORAWAN\_AT\_SUPPORT: -&gt; OFF
+* Select Tools -&gt; LORAWAN\_AT\_RGB : -&gt; ACTIVE
+* Select Tools -&gt; LoRaWan_ Debug Level : -&gt; FREQ&&DIO \(for most verbose messages\)
 
 ### Programming **Example Sketch**
 
